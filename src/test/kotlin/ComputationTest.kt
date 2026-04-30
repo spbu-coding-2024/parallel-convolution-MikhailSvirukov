@@ -15,10 +15,6 @@ import kotlin.random.nextInt
 import kotlin.test.assertContentEquals
 
 class ComputationTest {
-    init {
-        System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME)
-    }
-
     @ParameterizedTest(name = "{0}")
     @MethodSource("imageFilterCases")
     fun `id filter keeps source image unchanged`(imagePath: String) =
@@ -30,7 +26,7 @@ class ComputationTest {
 
     @ParameterizedTest(name = "{0} x {1} with enlarging filter by {2}")
     @MethodSource("enlargeFilterCases")
-    suspend fun `apply filer with zeroes`(
+    fun `apply filer with zeroes`(
         imagePath: String,
         filter: Scheme,
         enlarge: Int,
