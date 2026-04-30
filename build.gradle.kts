@@ -22,7 +22,6 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
 }
 
-
 sourceSets {
     create("bench") {
         java.srcDir("src/bench/kotlin")

@@ -34,6 +34,7 @@ object IOManager {
         height: Int,
         output: ByteArray,
     ) {
+        libraryLoaded
         val result = Mat(height, width, CvType.CV_8UC3)
         result.put(0, 0, output)
         Imgcodecs.imwrite(outName, result)
