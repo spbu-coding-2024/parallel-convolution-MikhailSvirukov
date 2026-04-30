@@ -2,7 +2,7 @@ package org.example
 
 import org.example.filters.Scheme
 
-class Executor {
+object Executor {
     suspend fun sequential(
         name: String,
         filter: Scheme,
