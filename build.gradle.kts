@@ -22,14 +22,33 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
 }
 
+
+sourceSets {
+    create("bench") {
+        java.srcDir("src/bench/kotlin")
+        compileClasspath += sourceSets["main"].output
+        runtimeClasspath += output + compileClasspath
+    }
+}
+
+configurations.named("benchImplementation") {
+    extendsFrom(configurations["implementation"])
+}
+
+dependencies {
+    add("benchImplementation", "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
+}
+
 val libPath = "$rootDir/libs"
 
 tasks.withType<JavaExec> {
     jvmArgs("-Djava.library.path=$libPath")
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
 }
 
 tasks.withType<Test> {
     jvmArgs("-Djava.library.path=$libPath")
+    jvmArgs("--enable-native-access=ALL-UNNAMED")
     useJUnitPlatform()
 }
 
@@ -43,4 +62,17 @@ kotlin {
 
 ktlint {
     version = "1.4.0"
+}
+
+benchmark {
+    targets {
+        register("bench")
+    }
+}
+
+tasks.configureEach {
+    if (name == "benchBenchmark" && this is JavaExec) {
+        jvmArgs("-Djava.library.path=$libPath")
+        jvmArgs("--enable-native-access=ALL-UNNAMED")
+    }
 }
