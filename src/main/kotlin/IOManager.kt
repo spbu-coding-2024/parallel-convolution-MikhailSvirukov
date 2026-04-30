@@ -17,16 +17,16 @@ object IOManager {
     }
 
     fun loadRgbImage(name: String): LoadedImage {
-            val src = Imgcodecs.imread(name)
-            val width = src.cols()
-            val height = src.rows()
-            val channels = src.channels()
+        val src = Imgcodecs.imread(name)
+        val width = src.cols()
+        val height = src.rows()
+        val channels = src.channels()
 
-            val input = ByteArray(width * height * channels)
-            src.get(0, 0, input)
+        val input = ByteArray(width * height * channels)
+        src.get(0, 0, input)
 
-            return LoadedImage(width, height, channels, input)
-        }
+        return LoadedImage(width, height, channels, input)
+    }
 
     fun saveRgbImage(
         outName: String,
