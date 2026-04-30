@@ -3,7 +3,7 @@ package org.example
 import org.example.filters.Scheme
 
 object Executor {
-    suspend fun sequential(
+    fun sequential(
         name: String,
         filter: Scheme,
     ) {
