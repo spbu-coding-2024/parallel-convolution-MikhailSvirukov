@@ -26,27 +26,29 @@ fun main(args: Array<String>) {
         private val tasksX by argument(ArgType.Int, "number of tasks to split for rows").optional()
         private val tasksY by argument(ArgType.Int, "number of tasks to split for columns").optional()
 
-        override fun execute() = runBlocking {
-            val file = File(filename)
-            require(file.exists()) { "File does not exist: $filename" }
+        override fun execute() =
+            runBlocking {
+                val file = File(filename)
+                require(file.exists()) { "File does not exist: $filename" }
                 Executor.withCoroutinesChunk(
                     filename,
                     filter,
                     tasksX,
                     tasksY,
                 )
-        }
+            }
     }
 
     class Sequential : Subcommand("sequential", "Run sequential computation") {
         private val filename by argument(ArgType.String, "path to file")
         private val filter by argument(schemeArgType, "filter type")
 
-        override fun execute() = runBlocking {
-            val file = File(filename)
-            require(file.exists()) { "File does not exist: $filename" }
+        override fun execute() =
+            runBlocking {
+                val file = File(filename)
+                require(file.exists()) { "File does not exist: $filename" }
                 Executor.sequential(filename, filter)
-        }
+            }
     }
 
     class CoroutinesRows : Subcommand("coroutines_rows", "Run coroutine rows computation") {
@@ -54,15 +56,16 @@ fun main(args: Array<String>) {
         private val filter by argument(schemeArgType, "filter type")
         private val tasks by argument(ArgType.Int, "number of tasks to split file").optional()
 
-        override fun execute() = runBlocking {
-            val file = File(filename)
-            require(file.exists()) { "File does not exist: $filename" }
+        override fun execute() =
+            runBlocking {
+                val file = File(filename)
+                require(file.exists()) { "File does not exist: $filename" }
                 Executor.withCoroutinesRows(
                     filename,
                     filter,
                     tasks,
                 )
-        }
+            }
     }
 
     class CoroutinesColumns : Subcommand("coroutines_columns", "Run coroutine columns computation") {
@@ -70,15 +73,16 @@ fun main(args: Array<String>) {
         private val filter by argument(schemeArgType, "filter type")
         private val tasks by argument(ArgType.Int, "number of tasks to split file").optional()
 
-        override fun execute() = runBlocking {
-            val file = File(filename)
-            require(file.exists()) { "File does not exist: $filename" }
+        override fun execute() =
+            runBlocking {
+                val file = File(filename)
+                require(file.exists()) { "File does not exist: $filename" }
                 Executor.withCoroutinesColumn(
                     filename,
                     filter,
                     tasks,
                 )
-        }
+            }
     }
 
     class CoroutinesSegment : Subcommand("coroutines_segment", "Run coroutine segment computation") {
@@ -86,16 +90,16 @@ fun main(args: Array<String>) {
         private val filter by argument(schemeArgType, "filter type")
         private val tasks by argument(ArgType.Int, "number of tasks to split file").optional()
 
-        override fun execute() = runBlocking {
-            val file = File(filename)
-            require(file.exists()) { "File does not exist: $filename" }
-            Executor.withCoroutinesSegments(
-                filename,
-                filter,
-                tasks,
-            )
-
-        }
+        override fun execute() =
+            runBlocking {
+                val file = File(filename)
+                require(file.exists()) { "File does not exist: $filename" }
+                Executor.withCoroutinesSegments(
+                    filename,
+                    filter,
+                    tasks,
+                )
+            }
     }
 
     val parser = ArgParser("convolution")
