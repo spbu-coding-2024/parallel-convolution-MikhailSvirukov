@@ -1,12 +1,6 @@
 package org.example
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.joinAll
-import kotlinx.coroutines.launch
 import org.example.filters.Scheme
-import kotlin.math.min
 
 val outName = { name: String, filter: String ->
     val (left, right) = name.split(".", limit = 2)
@@ -14,8 +8,6 @@ val outName = { name: String, filter: String ->
 }
 
 object Computation {
-    var dispatcher: CoroutineDispatcher = Dispatchers.Default
-
     fun sequential(
         image: LoadedImage,
         filter: Scheme,

@@ -18,18 +18,17 @@ val schemeArgType =
         variantToString = { it.name },
     )
 
-
 fun main(args: Array<String>) {
-
     class Sequential : Subcommand("sequential", "Run sequential computation") {
         private val filename by argument(ArgType.String, "path to file")
         private val filter by argument(schemeArgType, "filter type")
 
-        override fun execute() = runBlocking {
-            val file = File(filename)
-            require(file.exists()) { "File does not exist: $filename" }
-            Executor.sequential(filename, filter)
-        }
+        override fun execute() =
+            runBlocking {
+                val file = File(filename)
+                require(file.exists()) { "File does not exist: $filename" }
+                Executor.sequential(filename, filter)
+            }
     }
 
     val parser = ArgParser("convolution")
