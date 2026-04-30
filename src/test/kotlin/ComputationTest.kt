@@ -15,22 +15,88 @@ import kotlin.random.nextInt
 import kotlin.test.assertContentEquals
 
 class ComputationTest {
-    init {
-        System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME)
-    }
-
     @ParameterizedTest(name = "{0}")
     @MethodSource("imageFilterCases")
     fun `id filter keeps source image unchanged`(imagePath: String) =
         runBlocking {
             val image = IOManager.loadRgbImage(imagePath)
             val output = Computation.sequential(image, Id())
+            val outputRow = Computation.withCoroutinesRows(image, Id(), null)
+            val outputCol = Computation.withCoroutinesColumn(image, Id(), null)
+            val outputSeg = Computation.withCoroutinesSegments(image, Id(), JOBS)
+            val outputChunk =
+                Computation.withCoroutinesChunk(
+                    image,
+                    Id(),
+                    JOBS,
+                    JOBS,
+                )
             assertContentEquals(image.input, output, "image: $imagePath sequentially")
+            assertContentEquals(image.input, outputRow, "image: $imagePath by rows")
+            assertContentEquals(image.input, outputCol, "image: $imagePath by columns")
+            assertContentEquals(image.input, outputSeg, "image: $imagePath by segments")
+            assertContentEquals(image.input, outputChunk, "image: $imagePath by chunks")
         }
+
+    @ParameterizedTest(name = "{0} x {1}")
+    @MethodSource("imageFilterCases")
+    fun `withCoroutinesSegments matches sequential output`(
+        imagePath: String,
+        filter: Scheme,
+    ) = runBlocking {
+        val image = IOManager.loadRgbImage(imagePath)
+        val reference = Computation.sequential(image, filter)
+
+        val segments = Computation.withCoroutinesSegments(image, filter, JOBS)
+
+        assertContentEquals(reference, segments)
+    }
+
+    @ParameterizedTest(name = "{0} x {1}")
+    @MethodSource("imageFilterCases")
+    fun `withCoroutinesColumn matches sequential output`(
+        imagePath: String,
+        filter: Scheme,
+    ) = runBlocking {
+        val image = IOManager.loadRgbImage(imagePath)
+        val reference = Computation.sequential(image, filter)
+
+        val columns = Computation.withCoroutinesColumn(image, filter, null)
+
+        assertContentEquals(reference, columns)
+    }
+
+    @ParameterizedTest(name = "{0} x {1}")
+    @MethodSource("imageFilterCases")
+    fun `withCoroutinesRows matches sequential output`(
+        imagePath: String,
+        filter: Scheme,
+    ) = runBlocking {
+        val image = IOManager.loadRgbImage(imagePath)
+        val reference = Computation.sequential(image, filter)
+
+        val rows = Computation.withCoroutinesRows(image, filter, null)
+
+        assertContentEquals(reference, rows)
+    }
+
+    @ParameterizedTest(name = "{0} x {1}")
+    @MethodSource("imageFilterCases")
+    fun `withCoroutinesChunk matches sequential output`(
+        imagePath: String,
+        filter: Scheme,
+    ) = runBlocking {
+        val image = IOManager.loadRgbImage(imagePath)
+        val reference = Computation.sequential(image, filter)
+
+        val chunks = Computation.withCoroutinesChunk(image, filter, JOBS, JOBS)
+
+        assertContentEquals(reference, chunks)
+    }
 
     @ParameterizedTest(name = "{0} x {1} with enlarging filter by {2}")
     @MethodSource("enlargeFilterCases")
-    suspend fun `apply filer with zeroes`(
+    fun `apply filer with zeroes`(
         imagePath: String,
         filter: Scheme,
         enlarge: Int,
@@ -52,6 +118,7 @@ class ComputationTest {
             matrix: Array<DoubleArray>,
         ) : Scheme(name, factor, bias, matrix)
 
+        private const val JOBS = 8
         private const val DIRPATH = "img/test"
         private const val MAX_ENLARGE_COEF = 10
         private const val MAX_TESTS = 42L
