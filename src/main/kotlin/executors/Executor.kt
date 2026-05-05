@@ -1,6 +1,9 @@
-package org.example
+package org.example.executors
 
+import org.example.Computation
+import org.example.IOManager
 import org.example.filters.Scheme
+import org.example.outName
 
 object Executor {
     fun sequential(

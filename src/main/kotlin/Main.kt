@@ -8,6 +8,7 @@ import kotlinx.cli.ExperimentalCli
 import kotlinx.cli.Subcommand
 import kotlinx.cli.optional
 import kotlinx.coroutines.runBlocking
+import org.example.executors.Executor
 import org.example.filters.allSchemes
 import org.example.filters.mapNameToScheme
 import java.io.File
