@@ -6,7 +6,7 @@ import org.example.filters.Scheme
 import org.example.outName
 
 object Executor {
-    fun sequential(
+    suspend fun sequential(
         name: String,
         filter: Scheme,
     ) {
