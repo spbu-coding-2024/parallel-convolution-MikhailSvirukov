@@ -20,6 +20,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
     testImplementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
+    implementation("org.boofcv:boofcv-core:1.1.1")
+    implementation("org.boofcv:boofcv-io:1.1.1")
 }
 
 sourceSets {
