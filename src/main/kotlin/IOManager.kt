@@ -1,13 +1,13 @@
 package org.example
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import boofcv.io.image.ConvertBufferedImage
 import boofcv.io.image.UtilImageIO
 import boofcv.struct.image.GrayU8
 import boofcv.struct.image.ImageType
 import boofcv.struct.image.Planar
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class LoadedImage(
     val width: Int,
@@ -21,27 +21,27 @@ object IOManager {
 
     suspend fun loadRgbImage(name: String): LoadedImage =
         withContext(dispatcher) {
-        val buffered = UtilImageIO.loadImage(name) ?: error("Cannot load image: $name")
+            val buffered = UtilImageIO.loadImage(name) ?: error("Cannot load image: $name")
 
-        val width = buffered.width
-        val height = buffered.height
+            val width = buffered.width
+            val height = buffered.height
 
-        val imageType = ImageType.pl(3, GrayU8::class.java)
+            val imageType = ImageType.pl(3, GrayU8::class.java)
 
-        val planar: Planar<GrayU8> =
-            ConvertBufferedImage.convertFrom(buffered, true, imageType)
+            val planar: Planar<GrayU8> =
+                ConvertBufferedImage.convertFrom(buffered, true, imageType)
 
-        val channels = planar.numBands
-        val input = ByteArray(width * height * channels)
+            val channels = planar.numBands
+            val input = ByteArray(width * height * channels)
 
-        var idx = 0
-        for (y in 0 until height) {
-            for (x in 0 until width) {
-                for (c in 0 until channels) {
-                    input[idx++] = planar.getBand(c).unsafe_get(x, y).toByte()
+            var idx = 0
+            for (y in 0 until height) {
+                for (x in 0 until width) {
+                    for (c in 0 until channels) {
+                        input[idx++] = planar.getBand(c).unsafe_get(x, y).toByte()
+                    }
                 }
             }
-        }
 
             LoadedImage(width, height, channels, input)
         }
