@@ -21,6 +21,8 @@ dependencies {
     testImplementation(kotlin("reflect"))
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
+    implementation("org.boofcv:boofcv-core:1.1.1")
+    implementation("org.boofcv:boofcv-io:1.1.1")
 }
 
 sourceSets {
@@ -39,16 +41,7 @@ dependencies {
     add("benchImplementation", "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
 }
 
-val libPath = "$rootDir/libs"
-
-tasks.withType<JavaExec> {
-    jvmArgs("-Djava.library.path=$libPath")
-    jvmArgs("--enable-native-access=ALL-UNNAMED")
-}
-
 tasks.withType<Test> {
-    jvmArgs("-Djava.library.path=$libPath")
-    jvmArgs("--enable-native-access=ALL-UNNAMED")
     useJUnitPlatform()
 }
 
@@ -67,12 +60,5 @@ ktlint {
 benchmark {
     targets {
         register("bench")
-    }
-}
-
-tasks.configureEach {
-    if (name == "benchBenchmark" && this is JavaExec) {
-        jvmArgs("-Djava.library.path=$libPath")
-        jvmArgs("--enable-native-access=ALL-UNNAMED")
     }
 }
