@@ -19,17 +19,29 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
     testImplementation(kotlin("reflect"))
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
     implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
+    implementation("org.boofcv:boofcv-core:1.1.1")
+    implementation("org.boofcv:boofcv-io:1.1.1")
 }
 
-val libPath = "$rootDir/libs"
+sourceSets {
+    create("bench") {
+        java.srcDir("src/bench/kotlin")
+        compileClasspath += sourceSets["main"].output
+        runtimeClasspath += output + compileClasspath
+    }
+}
 
-tasks.withType<JavaExec> {
-    jvmArgs("-Djava.library.path=$libPath")
+configurations.named("benchImplementation") {
+    extendsFrom(configurations["implementation"])
+}
+
+dependencies {
+    add("benchImplementation", "org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.16")
 }
 
 tasks.withType<Test> {
-    jvmArgs("-Djava.library.path=$libPath")
     useJUnitPlatform()
 }
 
@@ -43,4 +55,10 @@ kotlin {
 
 ktlint {
     version = "1.4.0"
+}
+
+benchmark {
+    targets {
+        register("bench")
+    }
 }
